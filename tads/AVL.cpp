@@ -8,10 +8,6 @@ class AVL{
         NodoAVL* raiz;
         int cantNodos;
 
-        //int max(int a, int b){
-        //    return a > b ? a : b;
-        //}
-
         int getAltura(NodoAVL* nodo){
             return nodo ? nodo->altura : 0;
         }

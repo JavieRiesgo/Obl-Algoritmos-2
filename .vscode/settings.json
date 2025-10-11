@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        ".als.json": "jsonc",
+        "xlocale": "cpp",
+        "xlocnum": "cpp",
+        "utility": "cpp"
+    }
+}

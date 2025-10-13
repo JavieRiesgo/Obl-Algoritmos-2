@@ -49,66 +49,114 @@ class AVL{
             A = B;
         }
 
-        void InsertarAux(NodoAVL*& nodo, int clave, string nombre, int dato2){
+        
+        //void InsertarAux(NodoAVL*& nodo, int clave, string nombre, int dato2){
+        //    if (!nodo){
+        //        /*nodo = new NodoAVL();
+        //        nodo->clave = clave;
+        //        nodo->nombre = nombre;
+        //        nodo->dato2 = dato2;
+        //        nodo->izq = nodo->der = NULL;
+        //        nodo->altura = 1;
+        //        cantNodos++;*/
+        //        nodo = new NodoAVL(clave, nombre, dato2);
+        //        cantNodos++;
+        //        return;
+        //    }
+        //    if (nodo->clave < clave){
+        //        InsertarAux(nodo->der, clave, nombre, dato2);             
+        //    }
+        //    else if (nodo->clave > clave){
+        //        InsertarAux(nodo->izq, clave, nombre, dato2);
+        //    }
+        //    else{
+        //        if (dato2 < nodo->dato2)
+        //            InsertarAux(nodo->der, clave, nombre, dato2);
+        //        else if (dato2 > nodo->dato2)
+        //            InsertarAux(nodo->izq, clave, nombre, dato2);
+        //        else
+        //            return;
+        //    }
+//
+        //    //Calcular la altura
+        //    nodo->altura = 1 + max(getAltura(nodo->der), getAltura(nodo->izq));
+        //    nodo->cantNodosArbol = 1 + getCantNodos(nodo->izq) + getCantNodos(nodo->der);
+//
+        //    //Verificar el balance
+        //    int balance = calcularBalance(nodo); // 1 / 0 / -1
+        //    // -2 desbalance derecha
+        //    bool desbalanceDer = balance < -1;
+        //    bool desbalanceIzq = balance > 1;
+        //    
+        //    //Izq - Izq
+        //    if (desbalanceIzq && nodo->izq->clave > clave){
+        //        rotacionHoraria(nodo);
+        //    }
+        //    //Izq - Der
+        //    //rotacion izquierda (en Y) - derecha (en Z)
+        //    if (desbalanceIzq && nodo->izq->clave < clave){
+        //        rotacionAntiHoraria(nodo->izq); // Y
+        //        rotacionHoraria(nodo); // Z
+        //    }
+        //    //Der - Izq
+        //    //rotacion derecha (en Y) - izquierda (en Z)
+        //    if (desbalanceDer && nodo->der->clave > clave){
+        //        rotacionHoraria(nodo->der); // Y
+        //        rotacionAntiHoraria(nodo); // Z
+        //    }
+        //    //Der - Der
+        //    if (desbalanceDer && nodo->der->clave < clave){
+        //        rotacionAntiHoraria(nodo);
+        //    }
+//
+        //}
+        
+        void InsertarAux(NodoAVL*& nodo, int clave, const string& nombre, int dato2){
             if (!nodo){
-                /*nodo = new NodoAVL();
-                nodo->clave = clave;
-                nodo->nombre = nombre;
-                nodo->dato2 = dato2;
-                nodo->izq = nodo->der = NULL;
-                nodo->altura = 1;
-                cantNodos++;*/
                 nodo = new NodoAVL(clave, nombre, dato2);
                 cantNodos++;
                 return;
             }
-            if (nodo->clave < clave){
-                InsertarAux(nodo->der, clave, nombre, dato2);             
+        
+            // decidir rama con la misma regla que las rotaciones usarán
+            if (vaADerecha(clave, dato2, nodo)) {
+                InsertarAux(nodo->der, clave, nombre, dato2);
             }
-            else if (nodo->clave > clave){
+            else if (vaAIzquierda(clave, dato2, nodo)) {
                 InsertarAux(nodo->izq, clave, nombre, dato2);
             }
-            else{
-                if (dato2 < nodo->dato2)
-                    InsertarAux(nodo->der, clave, nombre, dato2);
-                else if (dato2 > nodo->dato2)
-                    InsertarAux(nodo->izq, clave, nombre, dato2);
-                else
-                    return;
+            else {
+                // mismo (clave,dato2) -> duplicado exacto: no insertar
+                return;
             }
-
-            //Calcular la altura
-            nodo->altura = 1 + max(getAltura(nodo->der), getAltura(nodo->izq));
+        
+            // actualizar altura y tam
+            nodo->altura = 1 + max(getAltura(nodo->izq), getAltura(nodo->der));
             nodo->cantNodosArbol = 1 + getCantNodos(nodo->izq) + getCantNodos(nodo->der);
-
-            //Verificar el balance
-            int balance = calcularBalance(nodo); // 1 / 0 / -1
-            // -2 desbalance derecha
-            bool desbalanceDer = balance < -1;
-            bool desbalanceIzq = balance > 1;
-            
-            //Izq - Izq
-            if (desbalanceIzq && nodo->izq->clave > clave){
+        
+            int balance = calcularBalance(nodo);
+        
+            // Para decidir LL / LR / RR / RL usamos las mismas funciones
+            // LL: left-heavy y el nuevo fue a la izquierda del hijo izquierdo
+            if (balance > 1 && vaAIzquierda(clave, dato2, nodo->izq)) {
                 rotacionHoraria(nodo);
             }
-            //Izq - Der
-            //rotacion izquierda (en Y) - derecha (en Z)
-            if (desbalanceIzq && nodo->izq->clave < clave){
-                rotacionAntiHoraria(nodo->izq); // Y
-                rotacionHoraria(nodo); // Z
+            // LR: left-heavy y el nuevo fue a la derecha del hijo izquierdo
+            else if (balance > 1 && vaADerecha(clave, dato2, nodo->izq)) {
+                rotacionAntiHoraria(nodo->izq);
+                rotacionHoraria(nodo);
             }
-            //Der - Izq
-            //rotacion derecha (en Y) - izquierda (en Z)
-            if (desbalanceDer && nodo->der->clave > clave){
-                rotacionHoraria(nodo->der); // Y
-                rotacionAntiHoraria(nodo); // Z
-            }
-            //Der - Der
-            if (desbalanceDer && nodo->der->clave < clave){
+            // RR: right-heavy y el nuevo fue a la derecha del hijo derecho
+            else if (balance < -1 && vaADerecha(clave, dato2, nodo->der)) {
                 rotacionAntiHoraria(nodo);
             }
-
+            // RL: right-heavy y el nuevo fue a la izquierda del hijo derecho
+            else if (balance < -1 && vaAIzquierda(clave, dato2, nodo->der)) {
+                rotacionHoraria(nodo->der);
+                rotacionAntiHoraria(nodo);
+            }
         }
+
 
         void destruir(NodoAVL*& nodo){
             if (!nodo) 
@@ -159,6 +207,22 @@ class AVL{
                     return BuscarAux(nodo->der, clave);
             }
             return NULL;
+        }
+
+        // devuelve true si (claveNuevo,dato2Nuevo) debe ir a la derecha
+        bool vaADerecha(int claveNuevo, int dato2Nuevo, NodoAVL* nodo) {
+            if (claveNuevo > nodo->clave) return true;
+            if (claveNuevo < nodo->clave) return false;
+            // clave igual -> dato2 menor va a la derecha
+            return dato2Nuevo < nodo->dato2;
+        }
+
+        // devuelve true si (claveNuevo,dato2Nuevo) debe ir a la izquierda
+        bool vaAIzquierda(int claveNuevo, int dato2Nuevo, NodoAVL* nodo) {
+            if (claveNuevo < nodo->clave) return true;
+            if (claveNuevo > nodo->clave) return false;
+            // clave igual -> dato2 mayor va a la izquierda
+            return dato2Nuevo > nodo->dato2;
         }
 
     public:

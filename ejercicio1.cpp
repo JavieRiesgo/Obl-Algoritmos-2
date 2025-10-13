@@ -24,11 +24,9 @@ int main()
 
             NodoAVL* existe = arbolId.Buscar(id);
             if (existe == NULL) {
-                //NodoAVL* nodo = new NodoAVL(id, nombre);
+                //cout << "Insertando clave=" << id << " dato2=" << puntaje << endl;
                 arbolId.insertar(id,nombre, puntaje);
                 arbolPuntaje.insertar(puntaje,nombre, id);
-                //arbolId.insertar(nodo);
-                //arbolPuntaje.insertar(nodo);
             }
         }
         else if (operacion == "FIND"){

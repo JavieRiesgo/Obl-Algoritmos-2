@@ -17,7 +17,8 @@ class AVL{
         }
 
         int calcularBalance(NodoAVL* nodo){
-            if (!nodo) return 0;
+            if (!nodo) 
+                return 0;
 
             return getAltura(nodo->izq) - getAltura(nodo->der);
         }
@@ -119,7 +120,8 @@ class AVL{
         }
 
         void inOrderAux(NodoAVL* nodo){
-            if (!nodo) return;
+            if (!nodo) 
+                return;
             inOrderAux(nodo->izq);
             cout << nodo->clave << endl;
             inOrderAux(nodo->der);
@@ -148,7 +150,7 @@ class AVL{
 
         NodoAVL* BuscarAux(NodoAVL* nodo, int clave){
             //NodoAVL* nodo = nodo;
-            while (nodo){
+            if (nodo){
                 if (nodo->clave == clave) 
                     return nodo;
                 if (clave < nodo->clave) 

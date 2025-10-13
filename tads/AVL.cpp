@@ -12,6 +12,10 @@ class AVL{
             return nodo ? nodo->altura : 0;
         }
 
+        int getCantNodos(NodoAVL* nodo){
+            return nodo ? nodo->cantNodosArbol : 0;
+        }
+
         int calcularBalance(NodoAVL* nodo){
             if (!nodo) return 0;
 
@@ -26,6 +30,8 @@ class AVL{
             A->der = B;
             B->altura = 1 + max(getAltura(B->izq), getAltura(B->der));
             A->altura = 1 + max(getAltura(A->izq), getAltura(A->der));
+            B->cantNodosArbol = 1 + getCantNodos(B->izq) + getCantNodos(B->der);
+            A->cantNodosArbol = 1 + getCantNodos(A->izq) + getCantNodos(A->der);
             B = A;
         }
 
@@ -37,18 +43,21 @@ class AVL{
             B->izq = A;
             A->altura = 1 + max(getAltura(A->izq), getAltura(A->der));
             B->altura = 1 + max(getAltura(B->izq), getAltura(B->der));
+            A->cantNodosArbol = 1 + getCantNodos(A->izq) + getCantNodos(A->der);
+            B->cantNodosArbol = 1 + getCantNodos(B->izq) + getCantNodos(B->der);            
             A = B;
         }
 
         void InsertarAux(NodoAVL*& nodo, int clave, string nombre, int dato2){
             if (!nodo){
-                //nodo = new NodoAVL(clave);
-                nodo = new NodoAVL();
+                /*nodo = new NodoAVL();
                 nodo->clave = clave;
                 nodo->nombre = nombre;
                 nodo->dato2 = dato2;
                 nodo->izq = nodo->der = NULL;
                 nodo->altura = 1;
+                cantNodos++;*/
+                nodo = new NodoAVL(clave, nombre, dato2);
                 cantNodos++;
                 return;
             }
@@ -58,11 +67,18 @@ class AVL{
             else if (nodo->clave > clave){
                 InsertarAux(nodo->izq, clave, nombre, dato2);
             }
-            else
-                return;
+            else{
+                if (dato2 < nodo->dato2)
+                    InsertarAux(nodo->der, clave, nombre, dato2);
+                else if (dato2 > nodo->dato2)
+                    InsertarAux(nodo->izq, clave, nombre, dato2);
+                else
+                    return;
+            }
 
             //Calcular la altura
             nodo->altura = 1 + max(getAltura(nodo->der), getAltura(nodo->izq));
+            nodo->cantNodosArbol = 1 + getCantNodos(nodo->izq) + getCantNodos(nodo->der);
 
             //Verificar el balance
             int balance = calcularBalance(nodo); // 1 / 0 / -1
@@ -94,7 +110,8 @@ class AVL{
         }
 
         void destruir(NodoAVL*& nodo){
-            if (!nodo) return;
+            if (!nodo) 
+                return;
             destruir(nodo->izq);
             destruir(nodo->der);
             delete nodo;
@@ -107,8 +124,43 @@ class AVL{
             cout << nodo->clave << endl;
             inOrderAux(nodo->der);
         }
+
+        int RankAux(NodoAVL* nodo, int puntajeMinimo){
+            if (!nodo) 
+                return 0;
+            if (nodo->clave >= puntajeMinimo){
+                // nodo y todo su subárbol derecho tienen clave >= x
+                return 1 + getCantNodos(nodo->der) + RankAux(nodo->izq, puntajeMinimo);
+            } else {
+                // nodo.clave < x -> ninguno en su subárbol izquierdo cumple, ir a derecha
+                return RankAux(nodo->der, puntajeMinimo);
+            }
+        }
+
+        NodoAVL* BuscarMaxAux(NodoAVL* nodo){
+            if (!nodo) 
+                return NULL;
+            //NodoAVL* actual = nodo;
+            if (nodo->der) 
+                return BuscarMaxAux(nodo->der);
+            return nodo;
+        }
+
+        NodoAVL* BuscarAux(NodoAVL* nodo, int clave){
+            //NodoAVL* nodo = nodo;
+            while (nodo){
+                if (nodo->clave == clave) 
+                    return nodo;
+                if (clave < nodo->clave) 
+                    return BuscarAux(nodo->izq, clave);
+                else 
+                    return BuscarAux(nodo->der, clave);
+            }
+            return NULL;
+        }
+
     public:
-        AVL() : raiz(NULL) {}
+        AVL() : raiz(NULL), cantNodos(0) {}
         ~AVL() {
             //cout << "Destruyendo" << endl;
             destruir(raiz);
@@ -124,7 +176,8 @@ class AVL{
         }
 
         int Rank(int puntaje){
-            NodoAVL* actual = raiz;
+            return RankAux(raiz, puntaje);
+            /*NodoAVL* actual = raiz;
             int cantRank = 0;
             while (actual){
                 if (actual->clave >= puntaje){
@@ -137,11 +190,12 @@ class AVL{
                     actual = actual->der;
                 }
             }
-            return cantRank;
+            return cantRank;*/
         }
 
         NodoAVL* Buscar(int clave){
-            NodoAVL* actual = raiz;
+            return BuscarAux(raiz, clave);
+            /*NodoAVL* actual = raiz;
             while (actual){
                 if (actual->clave == clave) 
                     return actual;
@@ -150,17 +204,18 @@ class AVL{
                 else 
                     actual = actual->izq;
             }
-            return NULL;
+            return NULL;*/
         }
 
         NodoAVL* BuscarMax(){
-            if (!raiz) 
+            return BuscarMaxAux(raiz);
+            /*if (!raiz) 
                 return NULL;
             NodoAVL* actual = raiz;
             while (actual->der){
                 actual = actual->der;
             }
-            return actual;
+            return actual;*/
         }
 
         int CantidadJugadores(){

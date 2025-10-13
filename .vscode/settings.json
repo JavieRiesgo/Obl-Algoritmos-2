@@ -3,6 +3,7 @@
         ".als.json": "jsonc",
         "xlocale": "cpp",
         "xlocnum": "cpp",
-        "utility": "cpp"
+        "utility": "cpp",
+        "xiosbase": "cpp"
     }
 }

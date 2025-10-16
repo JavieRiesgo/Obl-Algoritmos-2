@@ -24,7 +24,6 @@ class AVL{
         }
 
         void rotacionHoraria(NodoAVL*& B){
-            //cout << "Rotando Horario" << endl;
             NodoAVL* A = B->izq;
             NodoAVL* T2 = A->der;
             B->izq = T2;
@@ -37,7 +36,6 @@ class AVL{
         }
 
         void rotacionAntiHoraria(NodoAVL*& A){
-            //cout << "Rotando AntiHorario" << endl;
             NodoAVL* B = A->der;
             NodoAVL* T2 = B->izq;
             A->der = T2;
@@ -126,31 +124,37 @@ class AVL{
                 InsertarAux(nodo->izq, clave, nombre, dato2);
             }
             else {
-                // mismo (clave,dato2) -> duplicado exacto: no insertar
+                // misma clave y dato2 por lo que no se inserta
                 return;
             }
         
-            // actualizar altura y tam
+            // actualizar altura y cantNodos
             nodo->altura = 1 + max(getAltura(nodo->izq), getAltura(nodo->der));
             nodo->cantNodosArbol = 1 + getCantNodos(nodo->izq) + getCantNodos(nodo->der);
         
-            int balance = calcularBalance(nodo);
+            // Verificar el balance
+            int balance = calcularBalance(nodo); // 1 / 0 / -1
+            // -2 desbalance derecha
+            // +2 desbalance izquierda
         
-            // Para decidir LL / LR / RR / RL usamos las mismas funciones
-            // LL: left-heavy y el nuevo fue a la izquierda del hijo izquierdo
+            //Izq - Izq
+            // el nuevo fue a la izquierda del hijo izquierdo
             if (balance > 1 && vaAIzquierda(clave, dato2, nodo->izq)) {
                 rotacionHoraria(nodo);
             }
-            // LR: left-heavy y el nuevo fue a la derecha del hijo izquierdo
+            //Izq - Der
+            // el nuevo fue a la derecha del hijo izquierdo
             else if (balance > 1 && vaADerecha(clave, dato2, nodo->izq)) {
                 rotacionAntiHoraria(nodo->izq);
                 rotacionHoraria(nodo);
             }
-            // RR: right-heavy y el nuevo fue a la derecha del hijo derecho
+            //Der - Der
+            // el nuevo fue a la derecha del hijo derecho
             else if (balance < -1 && vaADerecha(clave, dato2, nodo->der)) {
                 rotacionAntiHoraria(nodo);
             }
-            // RL: right-heavy y el nuevo fue a la izquierda del hijo derecho
+            //Der - Izq
+            // el nuevo fue a la izquierda del hijo derecho
             else if (balance < -1 && vaAIzquierda(clave, dato2, nodo->der)) {
                 rotacionHoraria(nodo->der);
                 rotacionAntiHoraria(nodo);
@@ -179,10 +183,10 @@ class AVL{
             if (!nodo) 
                 return 0;
             if (nodo->clave >= puntajeMinimo){
-                // nodo y todo su subárbol derecho tienen clave >= x
+                // el nodo y todo su subárbol derecho tienen clave >= puntajeMinimo
                 return 1 + getCantNodos(nodo->der) + RankAux(nodo->izq, puntajeMinimo);
             } else {
-                // nodo.clave < x -> ninguno en su subárbol izquierdo cumple, ir a derecha
+                // nodo.clave < puntajeMinimo por lo que ninguno en su subárbol izquierdo cumple,buscar en la derecha
                 return RankAux(nodo->der, puntajeMinimo);
             }
         }
@@ -190,14 +194,12 @@ class AVL{
         NodoAVL* BuscarMaxAux(NodoAVL* nodo){
             if (!nodo) 
                 return NULL;
-            //NodoAVL* actual = nodo;
             if (nodo->der) 
                 return BuscarMaxAux(nodo->der);
             return nodo;
         }
 
         NodoAVL* BuscarAux(NodoAVL* nodo, int clave){
-            //NodoAVL* nodo = nodo;
             if (nodo){
                 if (nodo->clave == clave) 
                     return nodo;
@@ -228,60 +230,26 @@ class AVL{
     public:
         AVL() : raiz(NULL), cantNodos(0) {}
         ~AVL() {
-            //cout << "Destruyendo" << endl;
             destruir(raiz);
         }
         void insertar(int clave, string nombre, int dato2){
-            //cout << "Insertado " << clave << endl;
             InsertarAux(raiz, clave, nombre, dato2);
         }
 
         void inOrder(){
-            //cout << "InOrder: " << endl;
             inOrderAux(raiz);
         }
 
         int Rank(int puntaje){
             return RankAux(raiz, puntaje);
-            /*NodoAVL* actual = raiz;
-            int cantRank = 0;
-            while (actual){
-                if (actual->clave >= puntaje){
-                    cantRank++;
-                    if (actual->der) 
-                        cantRank += actual->der->altura; // Cantidad de nodos en el subarbol derecho
-                    actual = actual->izq;
-                }
-                else{
-                    actual = actual->der;
-                }
-            }
-            return cantRank;*/
         }
 
         NodoAVL* Buscar(int clave){
             return BuscarAux(raiz, clave);
-            /*NodoAVL* actual = raiz;
-            while (actual){
-                if (actual->clave == clave) 
-                    return actual;
-                if (actual->clave < clave) 
-                    actual = actual->der;
-                else 
-                    actual = actual->izq;
-            }
-            return NULL;*/
         }
 
         NodoAVL* BuscarMax(){
             return BuscarMaxAux(raiz);
-            /*if (!raiz) 
-                return NULL;
-            NodoAVL* actual = raiz;
-            while (actual->der){
-                actual = actual->der;
-            }
-            return actual;*/
         }
 
         int CantidadJugadores(){

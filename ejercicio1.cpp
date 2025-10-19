@@ -10,8 +10,8 @@ int main()
     int cantOperaciones;
     cin >> cantOperaciones;
 
-    AVL arbolId;
-    AVL arbolPuntaje;
+    AVL * arbolId;
+    AVL * arbolPuntaje;
     
     for (int i = 0; i < cantOperaciones; i++){
         string operacion;
@@ -22,16 +22,16 @@ int main()
             string nombre;
             cin >> id >> nombre >> puntaje;
 
-            NodoAVL* existe = arbolId.Buscar(id);
+            NodoAVL* existe = arbolId->Buscar(id);
             if (existe == NULL) {
-                arbolId.insertar(id,nombre, puntaje);
-                arbolPuntaje.insertar(puntaje,nombre, id);
+                arbolId->insertar(id,nombre, puntaje);
+                arbolPuntaje->insertar(puntaje,nombre, id);
             }
         }
         else if (operacion == "FIND"){
             int id;
             cin >> id;
-            NodoAVL* nodo = arbolId.Buscar(id);
+            NodoAVL* nodo = arbolId->Buscar(id);
             if (nodo){
                 cout << nodo->nombre << " " << nodo->dato2 << endl;
             }
@@ -42,11 +42,11 @@ int main()
         else if (operacion == "RANK"){
             int puntaje;
             cin >> puntaje;
-            int cantRank = arbolPuntaje.Rank(puntaje);
+            int cantRank = arbolPuntaje->Rank(puntaje);
             cout << cantRank << endl;
         }
         else if (operacion == "TOP1"){
-            NodoAVL * top1 = arbolPuntaje.BuscarMax();
+            NodoAVL * top1 = arbolPuntaje->BuscarMax();
             if (top1){
                 cout << top1->nombre << " " << top1->clave << endl;
             }
@@ -55,7 +55,7 @@ int main()
             }
         }
         else if (operacion == "COUNT"){
-            int cantJugadores = arbolId.CantidadJugadores();
+            int cantJugadores = arbolId->CantidadJugadores();
             cout << cantJugadores << endl;
         }
     }

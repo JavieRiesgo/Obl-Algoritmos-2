@@ -6,6 +6,7 @@ using namespace std;
 class AVL{
     private:
         NodoAVL* raiz;
+        NodoAVL* maximo;
         int cantNodos;
 
         int getAltura(NodoAVL* nodo){
@@ -46,73 +47,14 @@ class AVL{
             B->cantNodosArbol = 1 + getCantNodos(B->izq) + getCantNodos(B->der);            
             A = B;
         }
-
-        
-        //void InsertarAux(NodoAVL*& nodo, int clave, string nombre, int dato2){
-        //    if (!nodo){
-        //        /*nodo = new NodoAVL();
-        //        nodo->clave = clave;
-        //        nodo->nombre = nombre;
-        //        nodo->dato2 = dato2;
-        //        nodo->izq = nodo->der = NULL;
-        //        nodo->altura = 1;
-        //        cantNodos++;*/
-        //        nodo = new NodoAVL(clave, nombre, dato2);
-        //        cantNodos++;
-        //        return;
-        //    }
-        //    if (nodo->clave < clave){
-        //        InsertarAux(nodo->der, clave, nombre, dato2);             
-        //    }
-        //    else if (nodo->clave > clave){
-        //        InsertarAux(nodo->izq, clave, nombre, dato2);
-        //    }
-        //    else{
-        //        if (dato2 < nodo->dato2)
-        //            InsertarAux(nodo->der, clave, nombre, dato2);
-        //        else if (dato2 > nodo->dato2)
-        //            InsertarAux(nodo->izq, clave, nombre, dato2);
-        //        else
-        //            return;
-        //    }
-//
-        //    //Calcular la altura
-        //    nodo->altura = 1 + max(getAltura(nodo->der), getAltura(nodo->izq));
-        //    nodo->cantNodosArbol = 1 + getCantNodos(nodo->izq) + getCantNodos(nodo->der);
-//
-        //    //Verificar el balance
-        //    int balance = calcularBalance(nodo); // 1 / 0 / -1
-        //    // -2 desbalance derecha
-        //    bool desbalanceDer = balance < -1;
-        //    bool desbalanceIzq = balance > 1;
-        //    
-        //    //Izq - Izq
-        //    if (desbalanceIzq && nodo->izq->clave > clave){
-        //        rotacionHoraria(nodo);
-        //    }
-        //    //Izq - Der
-        //    //rotacion izquierda (en Y) - derecha (en Z)
-        //    if (desbalanceIzq && nodo->izq->clave < clave){
-        //        rotacionAntiHoraria(nodo->izq); // Y
-        //        rotacionHoraria(nodo); // Z
-        //    }
-        //    //Der - Izq
-        //    //rotacion derecha (en Y) - izquierda (en Z)
-        //    if (desbalanceDer && nodo->der->clave > clave){
-        //        rotacionHoraria(nodo->der); // Y
-        //        rotacionAntiHoraria(nodo); // Z
-        //    }
-        //    //Der - Der
-        //    if (desbalanceDer && nodo->der->clave < clave){
-        //        rotacionAntiHoraria(nodo);
-        //    }
-//
-        //}
         
         void InsertarAux(NodoAVL*& nodo, int clave, const string& nombre, int dato2){
             if (!nodo){
                 nodo = new NodoAVL(clave, nombre, dato2);
                 cantNodos++;
+                if (!maximo || clave > maximo->clave || (clave == maximo->clave && dato2 < maximo->dato2)) {
+                    maximo = nodo; // <-- actualizar máximo
+                }
                 return;
             }
         
@@ -186,7 +128,7 @@ class AVL{
                 // el nodo y todo su subárbol derecho tienen clave >= puntajeMinimo
                 return 1 + getCantNodos(nodo->der) + RankAux(nodo->izq, puntajeMinimo);
             } else {
-                // nodo.clave < puntajeMinimo por lo que ninguno en su subárbol izquierdo cumple,buscar en la derecha
+                // nodo->clave < puntajeMinimo por lo que ninguno en su subárbol izquierdo cumple,buscar en la derecha
                 return RankAux(nodo->der, puntajeMinimo);
             }
         }
@@ -228,9 +170,10 @@ class AVL{
         }
 
     public:
-        AVL() : raiz(NULL), cantNodos(0) {}
+        AVL() : raiz(NULL), maximo(NULL), cantNodos(0) {}
         ~AVL() {
             destruir(raiz);
+            maximo = NULL;
         }
         void insertar(int clave, string nombre, int dato2){
             InsertarAux(raiz, clave, nombre, dato2);
@@ -249,7 +192,7 @@ class AVL{
         }
 
         NodoAVL* BuscarMax(){
-            return BuscarMaxAux(raiz);
+            return maximo;
         }
 
         int CantidadJugadores(){

@@ -10,8 +10,8 @@ int main()
     int cantOperaciones;
     cin >> cantOperaciones;
 
-    AVL * arbolId;
-    AVL * arbolPuntaje;
+    AVL* arbolId = new AVL();
+    AVL* arbolPuntaje = new AVL();
     
     for (int i = 0; i < cantOperaciones; i++){
         string operacion;

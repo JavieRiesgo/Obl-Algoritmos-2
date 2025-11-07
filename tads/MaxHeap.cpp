@@ -1,11 +1,11 @@
-#ifndef MINHEAP
-#define MINHEAP
+#ifndef MAXHEAP
+#define MAXHEAP
 #include <cassert>
-#include "NodoHeap.cpp"
+#include "NodoMaxHeap.cpp"
 
-class minHeap{
+class maxHeap{
     private:
-        NodoHeap ** vec;
+        NodoMaxHeap ** vec;
         int capacidad;
         int primeroLibre;
 
@@ -25,12 +25,12 @@ class minHeap{
             return pos * 2 + 1;
         }
 
-        int funcionComparadora(NodoHeap * a, NodoHeap *b){
-            return a->valor - b->valor;
+        int funcionComparadora(NodoMaxHeap * a, NodoMaxHeap *b){
+            return b->clave - a->clave;
         }
 
         void intercambiar(int posPadre, int pos){
-            NodoHeap * aux = vec[posPadre];
+            NodoMaxHeap * aux = vec[posPadre];
             vec[posPadre] = vec[pos];
             vec[pos] = aux;
         }
@@ -53,10 +53,10 @@ class minHeap{
             // verificar que hijo vive en el heap
             if (posHijoIzq < this->primeroLibre && posHijoDer < this->primeroLibre){
                 // 2 hijos
-                int posHijoMenor = funcionComparadora(vec[posHijoIzq], vec[posHijoDer]) > 0 ? posHijoDer : posHijoIzq;
-                if(funcionComparadora(vec[pos], vec[posHijoMenor]) > 0) {
-                    intercambiar(pos, posHijoMenor);
-                    hundir(posHijoMenor);
+                int posHijoMayor = funcionComparadora(vec[posHijoIzq], vec[posHijoDer]) > 0 ? posHijoIzq : posHijoDer;
+                if(funcionComparadora(vec[pos], vec[posHijoMayor]) > 0) {
+                    intercambiar(pos, posHijoMayor);
+                    hundir(posHijoMayor);
                 }
             } else {
                 if(posHijoIzq < this->primeroLibre){
@@ -72,13 +72,13 @@ class minHeap{
         }
 
     public:
-        minHeap(int capacidad){
-            this->vec = new NodoHeap*[capacidad + 1];
+        maxHeap(int capacidad){
+            this->vec = new NodoMaxHeap*[capacidad + 1];
             this->capacidad = capacidad;
             this->primeroLibre = 1;
         }
 
-        ~minHeap(){
+        ~maxHeap(){
             for (int i = 1; i < this->primeroLibre; i++) {
                 delete this->vec[i];
             }
@@ -86,7 +86,7 @@ class minHeap{
         }
 
 
-        void insertar(NodoHeap* nodo){
+        void insertar(NodoMaxHeap* nodo){
             assert(!this->estaLleno());
             if (!this->estaLleno()) {
                 this->vec[this->primeroLibre] = nodo;
@@ -103,7 +103,7 @@ class minHeap{
             hundir(1);
         }
 
-        NodoHeap* tope(){
+        NodoMaxHeap* tope(){
             assert(this->primeroLibre > 1);
             assert(!estaVacio());
             return this->vec[1];

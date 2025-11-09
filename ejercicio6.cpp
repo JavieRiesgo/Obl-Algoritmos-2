@@ -9,12 +9,14 @@ using namespace std;
 struct NodoPozos{
     int inicio;
     int fin;
+    NodoPozos() {};
     NodoPozos(int i, int f) : inicio(i), fin(f) {};
 };
 
 struct NodoMejoras{
     int casa;
     int potencia;
+    NodoMejoras() {};
     NodoMejoras(int c, int p) : casa(c), potencia(p) {};
 };
 
@@ -29,8 +31,8 @@ int main()
 
     cin >> cantPozos >> cantMejoras >> casaAmigo;
 
-    NodoPozos** pozos = new NodoPozos*[cantPozos];
-    NodoMejoras** mejoras = new NodoMejoras*[cantMejoras];
+    NodoPozos** pozos = new NodoPozos*[cantPozos]();
+    NodoMejoras** mejoras = new NodoMejoras*[cantMejoras]();
 
     // Crear el max heap
     maxHeap * heapMejoras = new maxHeap(cantMejoras);
@@ -50,8 +52,8 @@ int main()
 
     bool imposible = false;
     while (casaActual < casaAmigo && !imposible){
-        //while (mejoraActual < cantMejoras && mejoras[mejoraActual]->casa == casaActual){
-        while (mejoraActual < cantMejoras && mejoras[mejoraActual]->casa <= casaActual + potenciaActual){
+        //while (mejoraActual < cantMejoras && mejoras[mejoraActual]->casa <= casaActual + potenciaActual){
+        while (mejoraActual < cantMejoras && mejoras[mejoraActual]->casa == casaActual){
             NodoMaxHeap* nodoMejora = new NodoMaxHeap();
             nodoMejora->clave = mejoras[mejoraActual]->potencia;
             nodoMejora->valor = mejoras[mejoraActual]->casa;
@@ -93,6 +95,18 @@ int main()
         cout << cantMejorasUsadas << endl;
     }
 
+    // Liberar memoria
+    for (int i = 0; i < cantPozos; i++){
+        delete pozos[i];
+    }
+    delete[] pozos;
+    for (int i = 0; i < cantMejoras; i++){
+        delete mejoras[i];
+    }
+    delete[] mejoras;
+    delete heapMejoras;
+
     // TEST 6810_33945 NO PASA POR 1
+    // TEST 7969_39779 NO PASA POR 1
     return 0;
 }

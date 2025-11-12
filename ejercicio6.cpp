@@ -62,7 +62,6 @@ int main()
         }
 
         if (pozoActual < cantPozos && pozos[pozoActual]->inicio == casaActual + 1){
-        //if (pozoActual < cantPozos && casaActual + potenciaActual >= pozos[pozoActual]->inicio){
             // Estoy en un pozo
             while (casaActual + potenciaActual <= pozos[pozoActual]->fin){
                 if (heapMejoras->estaVacio()){
@@ -106,7 +105,5 @@ int main()
     delete[] mejoras;
     delete heapMejoras;
 
-    // TEST 6810_33945 NO PASA POR 1
-    // TEST 7969_39779 NO PASA POR 1
     return 0;
 }

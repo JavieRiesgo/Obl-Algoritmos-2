@@ -7,6 +7,18 @@ using namespace std;
 
 int main()
 {
-    // TODO
+    int * fragmentos;
+    int cantFragmentos;
+    cin >> cantFragmentos;
+
+    fragmentos = new int[cantFragmentos];
+
+    for (int i = 0; i < cantFragmentos; i++)
+    {
+        cin >> fragmentos[i];
+    }
+    
+    
+
     return 0;
 }

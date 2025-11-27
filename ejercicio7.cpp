@@ -55,7 +55,7 @@ int main() {
     int* aux = new int[N];
 
     // hash grande para evitar rehash
-    TablaHashAbierta_Agenda* tabla = new TablaHashAbierta_Agenda(N * 3);
+    TablaHashAbierta* tabla = new TablaHashAbierta(N * 3);
 
     // leer ranking oficial
     for (int i = 0; i < N; i++) {

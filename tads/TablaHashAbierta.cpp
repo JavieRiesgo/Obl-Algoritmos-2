@@ -11,45 +11,44 @@ struct NodoLista {
     int valor;
     NodoLista* sig;
 
-    NodoLista(string unaClave, int unValor)
-        : clave(unaClave), valor(unValor), sig(0) {}
+    NodoLista(string nuevaClave, int nuevoValor)
+        : clave(nuevaClave), valor(nuevoValor), sig(NULL) {}
 
-    NodoLista(string unaClave, int unValor, NodoLista* unSig)
-        : clave(unaClave), valor(unValor), sig(unSig) {}
+    NodoLista(string nuevaClave, int nuevoValor, NodoLista* nuevoSig)
+        : clave(nuevaClave), valor(nuevoValor), sig(nuevoSig) {}
 };
 
 typedef NodoLista* Lista;
 
-class TablaHashAbierta_Agenda {
+class TablaHashAbierta {
 private:
     Lista* arrList;
     int tamanio;
     int cantidadDeElementos;
 
     void rehash() {
-        // No se usa en este ejercicio.
     }
 
     float factorDeCarga() {
         return (float)this->cantidadDeElementos / this->tamanio;
     }
 
-    bool insertarRecusrivo(string unaClave, int unValor, NodoLista*& ptr) {
-        if (ptr == NULL) {
-            ptr = new NodoLista(unaClave, unValor);
+    bool insertarRecusrivo(string unaClave, int unValor, NodoLista*& nodo) {
+        if (nodo == NULL) {
+            nodo = new NodoLista(unaClave, unValor);
             return false;
         } else {
-            if (ptr->clave == unaClave) {
-                ptr->valor = unValor;
+            if (nodo->clave == unaClave) {
+                nodo->valor = unValor;
                 return true;
             } else {
-                return insertarRecusrivo(unaClave, unValor, ptr->sig);
+                return insertarRecusrivo(unaClave, unValor, nodo->sig);
             }
         }
     }
 
 public:
-    TablaHashAbierta_Agenda(int tamaniInicial) {
+    TablaHashAbierta(int tamaniInicial) {
         this->tamanio = tamaniInicial;
         this->cantidadDeElementos = 0;
         arrList = new Lista[this->tamanio]();
@@ -86,7 +85,7 @@ public:
 
     void eliminar(string unaClave) { }
 
-    ~TablaHashAbierta_Agenda() {
+    ~TablaHashAbierta() {
         for (int i = 0; i < tamanio; i++) {
             NodoLista* nodo = arrList[i];
             while (nodo != NULL) {
